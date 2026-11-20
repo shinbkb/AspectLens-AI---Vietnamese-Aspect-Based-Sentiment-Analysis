@@ -13,7 +13,7 @@ st.set_page_config(page_title="AspectLens AI", page_icon="🔎", layout="wide")
 st.markdown("""
 <style>
 .stApp { background: #f5f7fb; }
-[data-testid="stMainBlockContainer"] { max-width: 1200px; padding-top: 2.2rem; }
+[data-testid="stMainBlockContainer"] { max-width: 1200px; padding-top: 4rem !important; }
 .eyebrow { color:#64748b; font-size:.82rem; font-weight:700; letter-spacing:.16em; }
 .result-card { background:white; border:1px solid #e5eaf1; border-radius:14px; padding:16px 18px; margin:8px 0; }
 </style>
