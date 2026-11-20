@@ -2,7 +2,7 @@
 
 Web app phân tích bình luận đánh giá smartphone tiếng Việt theo từng khía cạnh: pin, camera, màn hình, hiệu năng, giá cả và các khía cạnh khác. App trả sắc thái tích cực / trung lập / tiêu cực và dashboard xếp hạng các khía cạnh bị phàn nàn trong batch người dùng cung cấp.
 
-**Web demo:** đang triển khai trên Streamlit Community Cloud.
+**Web demo:** [AspectLens AI](https://aspectlens-ai---vietnamese-aspect-based-sentiment-analysis-3ks.streamlit.app/)
 
 ## Chạy ứng dụng
 
