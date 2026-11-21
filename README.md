@@ -96,7 +96,14 @@ Mở URL local mà Streamlit hiển thị (thường là http://localhost:8501).
 ├── app.py                                  # Giao diện Streamlit, phân tích và dashboard
 ├── requirements.txt                        # Thư viện runtime
 ├── results.zip                             # Checkpoint PyTorch, TF-IDF và lịch sử train
-├── ABSA_UIT_ViSFD_Kaggle_10LR_vs_MLP.ipynb # Notebook huấn luyện/đánh giá trên Kaggle
+├── notebooks/
+│   └── ABSA_UIT_ViSFD_Kaggle_10LR_vs_MLP.ipynb # Notebook huấn luyện/đánh giá trên Kaggle
+├── .streamlit/config.toml                  # Cấu hình giao diện Streamlit
+├── data/README.md                          # Hướng dẫn đặt dữ liệu local (không commit dataset)
+├── docs/IMPLEMENTATION.md                  # Chi tiết triển khai, split và artifact
+├── artifacts/.gitkeep                      # Nơi lưu artifact sinh khi chạy local
+├── scripts/__init__.py                     # Tiện ích project
+├── tests/.gitkeep                           # Thư mục dành cho kiểm thử
 └── src/
     ├── __init__.py
     ├── schema.py                           # Tên aspect và sentiment

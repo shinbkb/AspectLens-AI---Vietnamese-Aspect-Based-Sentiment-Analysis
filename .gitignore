@@ -5,3 +5,7 @@ __pycache__/
 .streamlit/secrets.toml
 data/
 !results.zip
+
+# Keep the local data directory placeholder while ignoring downloaded datasets.
+!data/
+!data/README.md
