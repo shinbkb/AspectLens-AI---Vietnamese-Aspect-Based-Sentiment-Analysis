@@ -6,4 +6,4 @@ ASPECT_NAMES = {
     "SER&ACC": "Dịch vụ & phụ kiện",
 }
 STATE_NAMES = {"Absent": "Không đề cập", "Negative": "Tiêu cực", "Neutral": "Trung lập", "Positive": "Tích cực"}
-STATE_COLORS = {"Negative": "#e85d5d", "Neutral": "#e5a93d", "Positive": "#25836b"}
+STATE_COLORS = {"Negative": "#e60012", "Neutral": "#dedede", "Positive": "#3d4f97"}

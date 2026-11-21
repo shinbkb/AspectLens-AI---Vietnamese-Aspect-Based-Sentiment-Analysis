@@ -1,4 +1,5 @@
 from pathlib import Path
+from html import escape
 
 import pandas as pd
 import plotly.express as px
@@ -9,19 +10,29 @@ from src.dataset import read_comments_csv
 from src.inference import AspectPredictor
 from src.schema import ASPECT_NAMES, STATE_COLORS, STATE_NAMES
 
-st.set_page_config(page_title="AspectLens AI", page_icon="🔎", layout="wide")
+st.set_page_config(page_title="AspectLens AI", page_icon="🔎", layout="wide", initial_sidebar_state="collapsed")
+st.markdown(f"<style>{(Path(__file__).parent / 'styles.css').read_text(encoding='utf-8')}</style>", unsafe_allow_html=True)
 st.markdown("""
-<style>
-.stApp { background: #f5f7fb; }
-[data-testid="stMainBlockContainer"] { max-width: 1200px; padding-top: 4rem !important; }
-.eyebrow { color:#64748b; font-size:.82rem; font-weight:700; letter-spacing:.16em; }
-.result-card { background:white; border:1px solid #e5eaf1; border-radius:14px; padding:16px 18px; margin:8px 0; }
-</style>
+<div class="masthead">
+  <div class="masthead-copy">
+    <div class="masthead-kicker">Vietnamese review intelligence · UIT‑ViSFD</div>
+    <div class="masthead-title">ASPECTLENS AI</div>
+  </div>
+  <div class="masthead-status"><strong>System ready</strong>10 khía cạnh · 3 sắc thái<br>SLP + TF‑IDF</div>
+</div>
+<div class="command-bar">
+  <span class="brand-pill">AspectLens</span>
+  <span class="command-links"><span>Phân tích</span><span>Dashboard</span><span>Mô hình</span></span>
+  <span class="command-chip">Review console · VI</span>
+</div>
+<div class="subnav-strip"><span>Bình luận</span><span>Khía cạnh</span><span>Sắc thái</span><span>Thống kê phiên hiện tại</span></div>
+<div class="hero-plate">
+  <div class="section-kicker">01 / Review analysis system</div>
+  <h1>KHÁCH HÀNG<br>ĐANG NÓI GÌ?<span class="hero-arrow">›</span></h1>
+  <p>Phân tích bình luận theo từng khía cạnh, nhận diện sắc thái và tổng hợp những điểm khách hàng phàn nàn nhiều nhất.</p>
+</div>
+<div class="chrome-note">DỮ LIỆU PHIÊN HIỆN TẠI · Thống kê chỉ tính trên bình luận bạn phân tích hoặc nạp vào, không đại diện toàn thị trường.</div>
 """, unsafe_allow_html=True)
-
-st.markdown('<div class="eyebrow">ASPECTLENS AI · VIETNAMESE REVIEW INTELLIGENCE</div>', unsafe_allow_html=True)
-st.title("Khách hàng đang nói gì về sản phẩm?")
-st.write("Phân tích bình luận theo từng khía cạnh, nhận diện sắc thái và tổng hợp những điểm khách hàng phàn nàn nhiều nhất.")
 
 artifact_path = Path(__file__).parent / "results.zip"
 
@@ -35,17 +46,6 @@ except Exception as exc:
     st.error("Không nạp được checkpoint. Kiểm tra file results.zip trong repository và chạy lại ứng dụng.")
     st.exception(exc)
     st.stop()
-
-with st.sidebar:
-    st.subheader("AspectLens")
-    st.caption("UIT‑ViSFD · 10 khía cạnh · 3 sắc thái")
-    st.metric("Mô hình", "SLP + TF‑IDF")
-    st.divider()
-    st.markdown("**Phạm vi dashboard**")
-    st.caption("Thống kê được tính trên bình luận bạn phân tích hoặc nạp trong phiên hiện tại. Không phải số liệu toàn thị trường.")
-    st.divider()
-    st.markdown("**Lưu ý**")
-    st.caption("Mô hình học từ đánh giá smartphone. Nhãn ‘Không đề cập’ được ẩn khỏi kết quả aspect.")
 
 tab_single, tab_dashboard, tab_about = st.tabs(["Phân tích bình luận", "Dashboard", "Giới thiệu & chất lượng mô hình"])
 
@@ -70,8 +70,13 @@ with tab_single:
                 st.info("Mô hình không phát hiện khía cạnh được đề cập rõ trong bình luận này.")
             for aspect in result["aspects"]:
                 state = aspect["sentiment"]
-                icon = {"Positive": "🟢", "Neutral": "🟡", "Negative": "🔴"}[state]
-                st.markdown(f"<div class='result-card'>{icon} <b>{aspect['aspect_vi']}</b> · {STATE_NAMES[state]} <span style='color:#64748b'>({aspect['confidence']:.0%})</span></div>", unsafe_allow_html=True)
+                st.markdown(
+                    f"<div class='result-card {state.lower()}'><span class='signal-dot'></span>"
+                    f"<strong>{escape(aspect['aspect_vi'])}</strong>"
+                    f"<span class='sentiment'>{escape(STATE_NAMES[state])}</span>"
+                    f"<span class='confidence'>{aspect['confidence']:.0%}</span></div>",
+                    unsafe_allow_html=True,
+                )
             st.caption("Độ tin cậy hiển thị là softmax, chưa được hiệu chuẩn.")
         else:
             st.info("Kết quả phân tích sẽ xuất hiện tại đây.")
@@ -136,7 +141,7 @@ with tab_dashboard:
             st.caption(f"{unique_complaints:,} bình luận có ít nhất một aspect tiêu cực. Thống kê chỉ phản ánh batch hiện tại.")
 
             rank = summary.sort_values("Tiêu cực", ascending=True)
-            fig = px.bar(rank, x="Tiêu cực", y="Khía cạnh", orientation="h", text="Tiêu cực", color="Tỷ lệ tiêu cực (%)", color_continuous_scale=["#d9eee8", "#f3cf8c", "#e85d5d"], title="Khía cạnh có nhiều lượt phàn nàn nhất")
+            fig = px.bar(rank, x="Tiêu cực", y="Khía cạnh", orientation="h", text="Tiêu cực", color="Tỷ lệ tiêu cực (%)", color_continuous_scale=["#c0d5e6", "#8ba1d4", "#e60012"], title="Khía cạnh có nhiều lượt phàn nàn nhất")
             fig.update_layout(height=440, margin=dict(l=10, r=10, t=60, b=10), coloraxis_colorbar_title="Tỷ lệ tiêu cực (%)", xaxis_title="Số lượt dự đoán tiêu cực", yaxis_title="")
             st.plotly_chart(fig, use_container_width=True)
 
@@ -159,6 +164,7 @@ with tab_dashboard:
 
 with tab_about:
     st.subheader("Mô hình và phạm vi sử dụng")
+    st.caption("Mô hình học từ đánh giá smartphone. Nhãn ‘Không đề cập’ được ẩn khỏi kết quả khía cạnh.")
     st.markdown("""
 - **Bài toán:** dự đoán `Absent / Negative / Neutral / Positive` riêng cho từng aspect.
 - **Mô hình:** character TF-IDF (n-gram 2–5) + một tầng tuyến tính SLP bằng PyTorch, không có tầng ẩn.
@@ -168,3 +174,5 @@ with tab_about:
 - **Dashboard:** phản ánh batch người dùng nạp trong phiên hiện tại, không đại diện toàn thị trường nếu chưa cung cấp đủ dữ liệu.
     """)
     st.info("UIT‑ViSFD được phát hành cho mục đích nghiên cứu. Kiểm tra điều khoản dataset trước khi dùng thương mại hoặc phân phối dữ liệu nguồn.")
+
+st.markdown('<div class="footer-bar">ASPECTLENS AI · VIETNAMESE ASPECT BASED SENTIMENT ANALYSIS · UIT‑ViSFD</div>', unsafe_allow_html=True)
