@@ -13,25 +13,16 @@ from src.schema import ASPECT_NAMES, STATE_COLORS, STATE_NAMES
 st.set_page_config(page_title="AspectLens AI", page_icon="🔎", layout="wide", initial_sidebar_state="collapsed")
 st.markdown(f"<style>{(Path(__file__).parent / 'styles.css').read_text(encoding='utf-8')}</style>", unsafe_allow_html=True)
 st.markdown("""
-<div class="masthead">
-  <div class="masthead-copy">
-    <div class="masthead-kicker">Vietnamese review intelligence · UIT‑ViSFD</div>
-    <div class="masthead-title">ASPECTLENS AI</div>
+<section class="app-hero">
+  <div class="hero-copy">
+    <div class="brand-line"><span class="brand-mark">A</span><span>AspectLens <b>AI</b></span><span class="brand-divider">/</span><span class="brand-context">Vietnamese review intelligence</span></div>
+    <div class="hero-eyebrow">UIT‑ViSFD · Phân tích cảm xúc theo khía cạnh</div>
+    <h1>Biến phản hồi khách hàng<br><span>thành quyết định rõ ràng.</span></h1>
+    <p>Khám phá khách hàng đang khen hay phàn nàn về pin, camera, giá cả và các khía cạnh khác.</p>
   </div>
-  <div class="masthead-status"><strong>System ready</strong>10 khía cạnh · 3 sắc thái<br>SLP + TF‑IDF</div>
-</div>
-<div class="command-bar">
-  <span class="brand-pill">AspectLens</span>
-  <span class="command-links"><span>Phân tích</span><span>Dashboard</span><span>Mô hình</span></span>
-  <span class="command-chip">Review console · VI</span>
-</div>
-<div class="subnav-strip"><span>Bình luận</span><span>Khía cạnh</span><span>Sắc thái</span><span>Thống kê phiên hiện tại</span></div>
-<div class="hero-plate">
-  <div class="section-kicker">01 / Review analysis system</div>
-  <h1>KHÁCH HÀNG<br>ĐANG NÓI GÌ?<span class="hero-arrow">›</span></h1>
-  <p>Phân tích bình luận theo từng khía cạnh, nhận diện sắc thái và tổng hợp những điểm khách hàng phàn nàn nhiều nhất.</p>
-</div>
-<div class="chrome-note">DỮ LIỆU PHIÊN HIỆN TẠI · Thống kê chỉ tính trên bình luận bạn phân tích hoặc nạp vào, không đại diện toàn thị trường.</div>
+  <div class="hero-visual" aria-hidden="true"><div class="orb orb-one"></div><div class="orb orb-two"></div><div class="hero-stat"><span>ASPECTS</span><strong>10</strong><small>khía cạnh sản phẩm</small></div></div>
+</section>
+<div class="scope-note"><span class="scope-dot"></span><span>Dashboard tổng hợp trên bình luận bạn phân tích trong phiên hiện tại.</span></div>
 """, unsafe_allow_html=True)
 
 artifact_path = Path(__file__).parent / "results.zip"
@@ -141,8 +132,8 @@ with tab_dashboard:
             st.caption(f"{unique_complaints:,} bình luận có ít nhất một aspect tiêu cực. Thống kê chỉ phản ánh batch hiện tại.")
 
             rank = summary.sort_values("Tiêu cực", ascending=True)
-            fig = px.bar(rank, x="Tiêu cực", y="Khía cạnh", orientation="h", text="Tiêu cực", color="Tỷ lệ tiêu cực (%)", color_continuous_scale=["#c0d5e6", "#8ba1d4", "#e60012"], title="Khía cạnh có nhiều lượt phàn nàn nhất")
-            fig.update_layout(height=440, margin=dict(l=10, r=10, t=60, b=10), coloraxis_colorbar_title="Tỷ lệ tiêu cực (%)", xaxis_title="Số lượt dự đoán tiêu cực", yaxis_title="")
+            fig = px.bar(rank, x="Tiêu cực", y="Khía cạnh", orientation="h", text="Tiêu cực", color="Tỷ lệ tiêu cực (%)", color_continuous_scale=["#c7c2ff", "#806dff", "#ea2261"], title="Khía cạnh có nhiều lượt phàn nàn nhất")
+            fig.update_layout(height=440, margin=dict(l=10, r=10, t=60, b=10), coloraxis_colorbar_title="Tỷ lệ tiêu cực (%)", xaxis_title="Số lượt dự đoán tiêu cực", yaxis_title="", paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font_color="#273951")
             st.plotly_chart(fig, use_container_width=True)
 
             st.markdown("**Phân bố sắc thái theo khía cạnh**")
@@ -150,7 +141,7 @@ with tab_dashboard:
             polarity["Sắc thái"] = polarity["sentiment"].map(STATE_NAMES)
             color_map = {STATE_NAMES[k]: v for k, v in STATE_COLORS.items()}
             chart = px.bar(polarity, x="aspect_vi", y="Số lượt", color="Sắc thái", barmode="stack", category_orders={"aspect_vi": [ASPECT_NAMES[a] for a in ASPECT_NAMES]}, color_discrete_map=color_map)
-            chart.update_layout(height=390, xaxis_title="", yaxis_title="Số lượt khía cạnh", legend_title="")
+            chart.update_layout(height=390, xaxis_title="", yaxis_title="Số lượt khía cạnh", legend_title="", paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font_color="#273951")
             st.plotly_chart(chart, use_container_width=True)
 
             st.markdown("**Bảng xếp hạng**")
